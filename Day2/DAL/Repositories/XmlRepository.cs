@@ -9,7 +9,7 @@ using DAL.Generator;
 
 namespace DAL.Repositories
 {
-    public  class XmlRepository : IFileRepository<UserEntity>
+    public  class XmlRepository : IFileRepository<SavedEntity>
     {
         private readonly string filePath;
 
@@ -18,11 +18,11 @@ namespace DAL.Repositories
             this.filePath = filePath;
         }
 
-        public void SaveAll(IEnumerable<UserEntity> entities)
+        public void SaveState(SavedEntity entity)
         {
             throw new NotImplementedException();
         }
-        public IEnumerable<UserEntity> GetAll()
+        public SavedEntity GetState()
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@ namespace DAL.Repositories
 {
     public interface IFileRepository<T>
     {
-        void SaveAll(IEnumerable<T> entities);
-        IEnumerable<T> GetAll();
+        void SaveState(T entity);
+        T GetState();
     }
 }

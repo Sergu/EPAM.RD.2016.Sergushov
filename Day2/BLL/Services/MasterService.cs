@@ -16,9 +16,9 @@ namespace BLL.Services
     {
         private readonly IRepository<UserEntity> repository;
         private IValidator<UserBll> userValidator;
-        private IEnumerable<INotifyingService> slaveServices; 
+        private IEnumerable<INotifiedService<UserBll>> slaveServices; 
 
-        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IEnumerable<INotifyingService> slaveServices)
+        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IEnumerable<INotifiedService<UserBll>> slaveServices)
         {
             this.repository = repository;
             this.userValidator = validator;
@@ -31,7 +31,7 @@ namespace BLL.Services
             {
                 var userId = repository.Add(entity.ToUserEntity());
                 foreach (var slave in slaveServices)
-                    slave.Notify(); //????
+                    slave.NotifyAdd(entity);
                 return userId;
             }
             else
@@ -40,6 +40,8 @@ namespace BLL.Services
         public void Delete(int id)
         {
             repository.Delete(id);
+            foreach (var slave in slaveServices)
+                slave.NotifyDelete(id);
         }
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
         {

@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomNumberGenerators", "CustomNumberGenerators\CustomNumberGenerators.csproj", "{A7E17B53-35F6-4551-BE96-DB2F29F20875}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configurator", "Configurator\Configurator.csproj", "{EA78F4BE-6B92-436D-B154-605E436B0BD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationLayer", "Configurator\ConfigurationLayer.csproj", "{EA78F4BE-6B92-436D-B154-605E436B0BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication", "ConsoleApplication\ConsoleApplication.csproj", "{83585395-626B-4D57-8709-DC991B97C8D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{EA78F4BE-6B92-436D-B154-605E436B0BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA78F4BE-6B92-436D-B154-605E436B0BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA78F4BE-6B92-436D-B154-605E436B0BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83585395-626B-4D57-8709-DC991B97C8D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83585395-626B-4D57-8709-DC991B97C8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83585395-626B-4D57-8709-DC991B97C8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83585395-626B-4D57-8709-DC991B97C8D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

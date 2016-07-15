@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConfigurationLayer;
 
-namespace DAL.Generator
+namespace ConsoleApplication
 {
-    public interface IGenerator
+    class Program
     {
-        int GenerateId();
-        void SetIdPosition(int idPosition);
+        static void Main(string[] args)
+        {
+        }
     }
 }

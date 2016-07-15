@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    public interface INotifyingService
+    public interface INotifiedService<T>
     {
-        void Notify(IEnumerable<UserBll> users);
+        void NotifyAdd(T user);
+        void NotifyDelete(int id);
+        void Init(IEnumerable<T> users);
     }
 }

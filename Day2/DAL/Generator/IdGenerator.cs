@@ -7,22 +7,26 @@ using CustomNumberGenerators;
 
 namespace DAL.Generator
 {
-    public class IdGenerator : IGenerator
+    public class IdGenerator : IGenerator, IGeneratorTracker
     {
         private IEnumerable<int> generatedId;
         private int currentPos;
-        public IdGenerator(INumberGenerator numberGenerator, int startPosition)
+        public IdGenerator(INumberGenerator numberGenerator)
         {
             generatedId = numberGenerator.GenerateNumberEnumerable();
-            this.currentPos = startPosition;
+            this.currentPos = 0;
         }
-        public int GetId()
+        public int GenerateId()
         {
             return generatedId.Skip(currentPos++).Take(1).FirstOrDefault();
         }
         public void SetIdPosition(int idPosition)
         {
             currentPos = idPosition;
+        }
+        public int GetCurrentPosition()
+        {
+            return currentPos;
         }
     }
 }

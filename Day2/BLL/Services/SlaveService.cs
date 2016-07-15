@@ -9,14 +9,9 @@ using BLL.Mappers;
 
 namespace BLL.Services
 {
-    public class SlaveService : IService<UserBll>, INotifyingService
+    public class SlaveService : IService<UserBll>, INotifiedService<UserBll>
     {
-        private IEnumerable<UserBll> users;
-
-        public SlaveService(IEnumerable<UserBll> users)
-        {
-            this.users = users;
-        }
+        private List<UserBll> users;
 
         public int Add(UserBll entity)
         {
@@ -38,9 +33,18 @@ namespace BLL.Services
             }
             return suitableUsers;
         }
-        public void Notify(IEnumerable<UserBll> users)
+        public void NotifyAdd(UserBll user)
         {
-            this.users = users;
+            users.Add(user);
+        }
+        public void NotifyDelete(int id)
+        {
+            var user = users.FirstOrDefault(u => u.Id == id);
+            users.Remove(user);
+        }
+        public void Init(IEnumerable<UserBll> users)
+        {
+            this.users = new List<UserBll>(users);
         }
     }
 }

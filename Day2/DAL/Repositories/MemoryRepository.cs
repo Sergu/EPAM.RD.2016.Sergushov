@@ -13,19 +13,22 @@ namespace DAL.Repositories
     {
         private List<UserEntity> users;
         private IGenerator generator;
-        private readonly IFileRepository<UserEntity> fileRepository;
+        private readonly IFileRepository<SavedEntity> fileRepository;
 
-        public MemoryRepository(IGenerator idGenerator, IFileRepository<UserEntity> fileRepository)
+        public MemoryRepository(IGenerator generator, IFileRepository<SavedEntity> fileRepository)
         {
-            this.generator = idGenerator;
+            this.generator = generator;
             this.fileRepository = fileRepository;
-            //users = new List<UserEntity>(fileRepository.GetAll());       
+            SavedEntity entity  = fileRepository.GetState();
+
+            users = new List<UserEntity>(entity.Users);
+            generator.SetIdPosition(entity.GeneratorPosition);  
 
         }
 
         public int Add(UserEntity entity)
         {
-            entity.Id = generator.GetId();
+            entity.Id = generator.GenerateId();
             users.Add(entity);
             return entity.Id;
         }
