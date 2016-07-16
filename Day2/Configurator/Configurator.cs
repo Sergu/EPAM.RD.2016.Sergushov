@@ -13,15 +13,17 @@ using DAL.Repositories;
 using DAL.SearchCriterias;
 using ConfigurationLayer.configVlidators;
 using CustomNumberGenerators;
+using NLog;
 
 namespace ConfigurationLayer
 {
-    public class Configurator
+    public static class Configurator
     {
-        private string FilePath;
-        public MasterService masterService;
-        public List<IService<UserBll>> slaveServices;
-        public Configurator(int masterServiceCount,int slaveServiceCount,IServiceCountValidator validator, string filePath)
+        //private string FilePath;
+        //public MasterService masterService;
+        //public List<IService<UserBll>> slaveServices;
+        //public ILogger logger;
+        public static void ConfigurateServices(int masterServiceCount, int slaveServiceCount, IServiceCountValidator validator, string filePath,out MasterService masterService,out List<IService<UserBll>> slaveServices,bool isLog)
         {
             if (ReferenceEquals(filePath, null))
             {
@@ -31,23 +33,22 @@ namespace ConfigurationLayer
             {
                 throw new Exception("incorrect service count");
             }
-            this.FilePath = filePath;
-            //this.masterService = new MasterService();
-            var slaveServices = new List<SlaveService>();
+            BllLogger.IsLogged = isLog;
+
+            var tempSlaveServices = new List<SlaveService>();
 
             var generator = new IdGenerator(new SimpleNumberGenerator());
 
-            for(int i=0;i < slaveServiceCount; i++)
+            for (int i = 0; i < slaveServiceCount; i++)
             {
-                slaveServices.Add(new SlaveService());
+                tempSlaveServices.Add(new SlaveService());
             }
-            var xmlRepository = new XmlRepository(FilePath);
-            var repository = new MemoryRepository(generator, xmlRepository);
+            var xmlRepository = new XmlRepository(filePath);
+            var repository = new MemoryRepository(generator);
 
 
-            this.slaveServices = new List<IService<UserBll>>(slaveServices.ToArray());
-            this.masterService = new MasterService(repository, new UserValidator(), slaveServices);
-
+            slaveServices = new List<IService<UserBll>>(tempSlaveServices.ToArray());
+            masterService = new MasterService(repository, new UserValidator(), tempSlaveServices,xmlRepository);
         }
     }
 }

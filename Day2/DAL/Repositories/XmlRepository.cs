@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.SearchCriterias;
 using DAL.Generator;
+using System.Xml.Serialization;
+using DAL.Exceptions;
+using System.IO;
 
 namespace DAL.Repositories
 {
-    public  class XmlRepository : IFileRepository<SavedEntity>
+    public class XmlRepository : IFileRepository<SavedEntity>
     {
         private readonly string filePath;
 
@@ -20,11 +23,35 @@ namespace DAL.Repositories
 
         public void SaveState(SavedEntity entity)
         {
-            throw new NotImplementedException();
+            XmlSerializer serializer = new XmlSerializer(typeof(SavedEntity));
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    serializer.Serialize(fs, entity);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new XmlException(ex.Message);
+            }
         }
         public SavedEntity GetState()
         {
-            throw new NotImplementedException();
+            XmlSerializer serializer = new XmlSerializer(typeof(SavedEntity));
+            SavedEntity savedState = null;
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                {
+                    savedState = (SavedEntity)serializer.Deserialize(fs);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new XmlException(ex.Message);
+            }
+            return savedState;
         }
     }
 }

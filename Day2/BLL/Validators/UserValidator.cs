@@ -12,7 +12,11 @@ namespace BLL.Validators
         public bool Validate(UserBll entity)
         {
             if (!ReferenceEquals(entity.VisaRecords, null))
+            {
+                if ((entity.FirstName == "") || (entity.LastName == ""))
+                    return false;
                 return true;
+            }
             return false;
         }
     }

@@ -7,7 +7,7 @@ using CustomNumberGenerators;
 
 namespace DAL.Generator
 {
-    public class IdGenerator : IGenerator, IGeneratorTracker
+    public class IdGenerator : IGenerator
     {
         private IEnumerable<int> generatedId;
         private int currentPos;

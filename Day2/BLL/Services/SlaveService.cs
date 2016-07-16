@@ -13,12 +13,22 @@ namespace BLL.Services
     {
         private List<UserBll> users;
 
+        public SlaveService()
+        {
+            users = new List<UserBll>();
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Trace("slave service created");
+        }
         public int Add(UserBll entity)
         {
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Warn("slave service try to add user entity");
             throw new Exception();
         }
         public void Delete(int id)
         {
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Warn("slave service try to delete user entity");
             throw new Exception();
         }
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
@@ -31,20 +41,28 @@ namespace BLL.Services
                     suitableUsers.Add(user);
                 }
             }
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Trace("master service searched users : {0}", suitableUsers.Count());
             return suitableUsers;
         }
         public void NotifyAdd(UserBll user)
         {
             users.Add(user);
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Trace("slave service notified add user: {0}",user.Id);
         }
         public void NotifyDelete(int id)
         {
             var user = users.FirstOrDefault(u => u.Id == id);
             users.Remove(user);
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Trace("slave service notified delete user: {0}", id);
         }
         public void Init(IEnumerable<UserBll> users)
         {
             this.users = new List<UserBll>(users);
+            if (BllLogger.IsLogged)
+                BllLogger.Instance.Trace("slave service initialized");
         }
     }
 }

@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
+    [Serializable]
     public enum UserGender
     {
         male = 0,
         female = 1
     }
-
-    public struct VisaRecord
+    [Serializable]
+    public struct VisaRecord : IComparable
     {
         public string Country { get; set; }
         public DateTime StartDate { get; set; }
@@ -40,8 +41,25 @@ namespace DAL.Entities
         {
             return Country.GetHashCode() ^ StartDate.GetHashCode() ^ EndDate.GetHashCode();
         }
+        public int CompareTo(object obj)
+        {
+            if (!ReferenceEquals(obj, null))
+            {
+                VisaRecord comparedVisa;
+                if(obj is VisaRecord)
+                {
+                    comparedVisa = (VisaRecord)obj;
+                    if (this.Equals(comparedVisa))
+                    {
+                        return 0;
+                    }
+                    return this.Country.Length < comparedVisa.Country.Length ? -1 : 1;
+                }
+            }
+            return -1;
+        }
     }
-
+    [Serializable]
     public class UserEntity : IEntity
     {
         public int Id { get; set; }

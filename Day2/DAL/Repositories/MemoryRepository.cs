@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.SearchCriterias;
 using DAL.Generator;
+using DAL.Exceptions;
 
 namespace DAL.Repositories
 {
@@ -13,17 +14,11 @@ namespace DAL.Repositories
     {
         private List<UserEntity> users;
         private IGenerator generator;
-        private readonly IFileRepository<SavedEntity> fileRepository;
 
-        public MemoryRepository(IGenerator generator, IFileRepository<SavedEntity> fileRepository)
+        public MemoryRepository(IGenerator generator)
         {
             this.generator = generator;
-            this.fileRepository = fileRepository;
-            SavedEntity entity  = fileRepository.GetState();
-
-            users = new List<UserEntity>(entity.Users);
-            generator.SetIdPosition(entity.GeneratorPosition);  
-
+            users = new List<UserEntity>();
         }
 
         public int Add(UserEntity entity)
@@ -49,9 +44,19 @@ namespace DAL.Repositories
             }
             return suitableUsers;
         }
-
-        ~MemoryRepository(){
-            //fileRepository.SaveAll(users);
+        public SavedEntity GetSavedState()
+        {
+            var generatorPosition = generator.GetCurrentPosition();
+            return new SavedEntity
+            {
+                GeneratorPosition = generatorPosition,
+                Users = users
+            };
+        }
+        public void Update(SavedEntity entity)
+        {
+            generator.SetIdPosition(entity.GeneratorPosition);
+            users = entity.Users;
         }
     }
 }

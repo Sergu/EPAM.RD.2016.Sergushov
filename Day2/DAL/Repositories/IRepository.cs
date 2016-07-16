@@ -13,5 +13,7 @@ namespace DAL.Repositories
         int Add(T entity);
         void Delete(int id);
         IEnumerable<T> Search(ISearchCriteria criteria);
+        SavedEntity GetSavedState();
+        void Update(SavedEntity entity);
     }
 }

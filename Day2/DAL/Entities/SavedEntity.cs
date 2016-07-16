@@ -9,12 +9,7 @@ namespace DAL.Entities
     [Serializable]
     public class SavedEntity
     {
-        public IEnumerable<UserEntity> Users { get; set; }
+        public List<UserEntity> Users { get; set; }
         public int GeneratorPosition { get; set; }
-        public SavedEntity(IEnumerable<UserEntity> users, int genetatorPosition)
-        {
-            this.Users = users;
-            this.GeneratorPosition = genetatorPosition;
-        }
     }
 }

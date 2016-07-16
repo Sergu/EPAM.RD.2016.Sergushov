@@ -10,5 +10,6 @@ namespace DAL.Generator
     {
         int GenerateId();
         void SetIdPosition(int idPosition);
+        int GetCurrentPosition();
     }
 }
