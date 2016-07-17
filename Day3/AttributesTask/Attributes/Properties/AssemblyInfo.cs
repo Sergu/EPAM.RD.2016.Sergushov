@@ -35,6 +35,6 @@ using Attributes;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: InstantiateAdvancedUser("Pavel", "Pavlov")]
+[assembly: InstantiateAdvancedUser("Pavelaaaa", "Pavlov")]
 [assembly: InstantiateAdvancedUser(4, "Senia", "Sidorov",12)]
 [assembly: InstantiateAdvancedUser(4, "Vasia", "Ivanov", 2329423)]
