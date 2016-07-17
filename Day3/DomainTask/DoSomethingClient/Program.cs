@@ -41,12 +41,13 @@ namespace DoSomethingClient
         private static void Method1(Input input)
         {
             // TODO: Create a domain with name MyDomain.
-            AppDomain domain = null;
-            var loader = (DomainAssemblyLoader)domain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(DomainAssemblyLoader).FullName);
 
+            AppDomain domain = AppDomain.CreateDomain("MyDomain");
+            var loader = (DomainAssemblyLoader)domain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(DomainAssemblyLoader).FullName);
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"MyDomain\MyLibrary.dll");
             try
             {
-                Result result = null; // TODO: Use loader here.
+                Result result = loader.LoadFile(path, input); // TODO: Use loader here.
 
                 Console.WriteLine("Method1: {0}", result.Value);
             }
@@ -56,6 +57,7 @@ namespace DoSomethingClient
             }
 
             // TODO: Unload domain
+            AppDomain.Unload(domain);
         }
 
         private static void Method2(Input input)
@@ -65,15 +67,15 @@ namespace DoSomethingClient
                 ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
                 PrivateBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MyDomain")
             };
-
+            var securityInfo = new System.Security.Policy.Evidence();
             // TODO: Create a domain with name MyDomain and setup from appDomainSetup.
-            AppDomain domain = null;
+            AppDomain domain = AppDomain.CreateDomain("MyDomain", securityInfo, appDomainSetup);
 
             var loader = (DomainAssemblyLoader)domain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(DomainAssemblyLoader).FullName);
-
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"MyDomain\MyLibrary.dll");
             try
             {
-                Result result = null; // TODO: Use loader here.
+                Result result = loader.LoadFrom(path,input); // TODO: Use loader here.
 
                 Console.WriteLine("Method2: {0}", result.Value);
             }
@@ -83,6 +85,7 @@ namespace DoSomethingClient
             }
 
             // TODO: Unload domain
+            AppDomain.Unload(domain);
         }
     }
 }

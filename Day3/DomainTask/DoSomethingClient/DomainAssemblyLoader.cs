@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using MyInterfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 
 namespace DoSomethingClient
 {
@@ -19,9 +22,11 @@ namespace DoSomethingClient
             var types = assembly.GetTypes();
 
             // TODO: Find first type that has DoSomething attribute and implements IDoSomething.
+            var type = types.FirstOrDefault(t => t.GetCustomAttribute(typeof(DoSomethingAttribute)) != null && t.GetInterface(nameof(IDoSomething)) != null);
             // TODO: Create an instance of this type.
+            var instance = Activator.CreateInstance(type);
 
-            IDoSomething doSomethingService = null; // TODO Save instance to variable.
+            IDoSomething doSomethingService = (IDoSomething)instance; // TODO Save instance to variable.
             return doSomethingService.DoSomething(data);
         }
 
@@ -36,9 +41,14 @@ namespace DoSomethingClient
             var assembly = Assembly.LoadFile(path);
             var types = assembly.GetTypes();
 
-            Type type = null; // TODO: Find first type that has DoSomething attribute and don't implement IDoSomething.
+            // TODO: Find first type that has DoSomething attribute and don't implement IDoSomething.
+            var type = types.FirstOrDefault(t => t.GetCustomAttribute(typeof(DoSomethingAttribute)) != null && t.GetInterface(nameof(IDoSomething)) == null);
+
             // TODO: MethodInfo mi = type.GetMethod("DoSomething");
-            Result result = null;
+            MethodInfo mi = type.GetMethod("DoSomething");
+            var instance = Activator.CreateInstance(type);
+
+            Result result = (Result)mi.Invoke(instance, new object[] { data});
             // TODO: result = mi.Invoke();
 
             return result;
@@ -48,12 +58,14 @@ namespace DoSomethingClient
         public Result LoadFrom(string fileName, Input data)
         {
             var assembly = Assembly.LoadFrom(fileName);
-            var type = assembly.GetTypes();
+            var types = assembly.GetTypes();
 
             // TODO: Find first type that has DoSomething attribute and implements IDoSomething.
+            var type = types.FirstOrDefault(t => t.GetCustomAttribute(typeof(DoSomethingAttribute)) != null && t.GetInterface(nameof(IDoSomething)) != null);
             // TODO: Create an instance of this type.
+            var instance = Activator.CreateInstance(type);
 
-            IDoSomething doSomethingService = null; // TODO Save instance to variable.
+            IDoSomething doSomethingService = (IDoSomething)instance; // TODO Save instance to variable.
             return doSomethingService.DoSomething(data);
         }
     }
