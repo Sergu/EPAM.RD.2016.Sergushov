@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 
 namespace FileStreams
@@ -16,11 +17,11 @@ namespace FileStreams
             string source = args[0];
             string destin = args[1];
 
-            ByteCopy(source, destin);
-            BlockCopy(source, destin);
+            //ByteCopy(source, destin);
+            //BlockCopy(source, destin);
             LineCopy(source, destin);
-            MemoryBufferCopy(source, destin);
-            WebClient();
+            //MemoryBufferCopy(source, destin);
+            //WebClient();
         }
 
         public static void ByteCopy(string source, string destin)
@@ -28,18 +29,28 @@ namespace FileStreams
             int bytesCounter = 0;
 
             // TODO: Implement byte-copy here.
-            /*
-            using (var sourceStream = new FileStream(...))
-            using (var destinStream = new FileStream(...))
+
+            using (var sourceStream = new FileStream(source,FileMode.Open))
+            using (var destinStream = new FileStream(destin, FileMode.Append))
+            using (var reader = new BinaryReader(sourceStream))
+            using (var writer = new BinaryWriter(destinStream))
             {
-                int b;
-                while ((b = sourceStream....()) != -1) // TODO: read byte
+                byte b;
+                try
                 {
-                    bytesCounter++;
-                    destinStream....((byte)b); // TODO: write byte
+                    while (true)
+                    {
+                        b = reader.ReadByte();// TODO: read byte
+                        bytesCounter++;
+                        writer.Write(b); // TODO: write byte
+                    }
+                }
+                catch(EndOfStreamException ex)
+                {
+
                 }
             }
-            */
+
 
             Console.WriteLine("ByteCopy() done. Total bytes: {0}", bytesCounter);
         }
@@ -47,23 +58,24 @@ namespace FileStreams
         public static void BlockCopy(string source, string destin)
         {
             // TODO: Implement block copy via buffer.
-            /*
-            using (var sourceStream = new FileStream(...))
-            using (var destinStream = new FileStream(...))
-            {
-                byte[] buffer = new byte[1024];
-                int bytesRead = 0;
 
+            using (var sourceStream = new FileStream(source, FileMode.Open))
+            using (var destinStream = new FileStream(destin,FileMode.Append))
+            using (var reader = new StreamReader(sourceStream))
+            using (var writer = new StreamWriter(destinStream))
+            {
+                char[] buffer = new char[1024];
+                int bytesRead = 0;
                 do
                 {
-                    bytesRead = sourceStream.Read(...); // TODO: read in buffer
+                    bytesRead = reader.ReadBlock(buffer,0,buffer.Length); // TODO: read in buffer
 
                     Console.WriteLine("BlockCopy(): writing {0} bytes.", bytesRead);
-                    destinStream.Write(...); // TODO: write to buffer
+                    writer.Write(buffer, 0, bytesRead); // TODO: write to buffer
                 }
                 while (bytesRead == buffer.Length);
             }
-            */
+
         }
 
         public static void LineCopy(string source, string destin)
@@ -71,28 +83,21 @@ namespace FileStreams
             int linesCount = 0;
 
             // TODO: implement copying lines using StreamReader/StreamWriter.
-            /*
-            using (var sourceStream = new FileStream(...))
-            using (var destinStream = new FileStream(...))
+
+            using (var sourceStream = new FileStream(source,FileMode.Open))
+            using (var destinStream = new FileStream(destin,FileMode.Append))
             {
-                using (var streamReader = new StreamReader(...))
-                using (var streamWriter = new StreamWriter(...))
+                using (var streamReader = new StreamReader(sourceStream))
+                using (var streamWriter = new StreamWriter(destinStream))
                 {
-
-                    string line;
-                    while (true)
+                    string line = null;
+                    while ((line = streamReader.ReadLine()) != null)
                     {
-                        linesCount++;
-                        if ((line = streamReader....()) == null) // TODO: read line
-                        {
-                            break;
-                        }
-                        streamWriter....(line); // TODO: write line
-
+                        streamWriter.WriteLine(line); // TODO: write line
                     }
                 }
             }
-            */
+
 
             Console.WriteLine("LineCopy(): {0} lines.", linesCount);
         }

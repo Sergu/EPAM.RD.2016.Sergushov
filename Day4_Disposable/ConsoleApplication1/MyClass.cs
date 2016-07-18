@@ -33,11 +33,21 @@ namespace ConsoleApplication1
         private void Dispose(bool disposing)
         {
             // TODO: Add your implementations here.
+            if (_disposed) return;
+            if (disposing)
+            {
+                _buffer = IntPtr.Zero;
+                if (_resource != null)
+                    _resource.Dispose();
+                _disposed = true;
+            }
         }
 
         public void DoSomething()
         {
             // NOTE: Manupulation with _buffer and _resource in this line.
+            if (_disposed)
+                throw new ObjectDisposedException("this instance was disposed");
         }
     }
 }
