@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CustomNumberGenerators
 {
+    [Serializable]
     public class SimpleNumberGenerator : INumberGenerator
     {
         public IEnumerable<int> GenerateNumberEnumerable()

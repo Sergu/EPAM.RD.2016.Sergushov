@@ -10,6 +10,7 @@ using DAL.Exceptions;
 
 namespace DAL.Repositories
 {
+    [Serializable]
     public class MemoryRepository : IRepository<UserEntity>
     {
         private List<UserEntity> users;

@@ -14,6 +14,7 @@ using DAL.SearchCriterias;
 using ConfigurationLayer.configVlidators;
 using CustomNumberGenerators;
 using NLog;
+using System.Reflection;
 
 namespace ConfigurationLayer
 {
@@ -41,6 +42,8 @@ namespace ConfigurationLayer
 
             for (int i = 0; i < slaveServiceCount; i++)
             {
+                var domain = AppDomain.CreateDomain("domain" + i.ToString());
+                var slaveService = (SlaveService)domain.CreateInstanceAndUnwrap("BLL", typeof(SlaveService).FullName);
                 tempSlaveServices.Add(new SlaveService());
             }
             var xmlRepository = new XmlRepository(filePath);
@@ -48,7 +51,17 @@ namespace ConfigurationLayer
 
 
             slaveServices = new List<IService<UserBll>>(tempSlaveServices.ToArray());
-            masterService = new MasterService(repository, new UserValidator(), tempSlaveServices,xmlRepository);
+
+            var masterDomain = AppDomain.CreateDomain("domainMaster");
+            masterService = (MasterService)masterDomain.CreateInstanceAndUnwrap("BLL",
+                typeof(MasterService).FullName,
+                false,
+                BindingFlags.Default,
+                null,
+                new object[] { repository,new UserValidator(),tempSlaveServices,xmlRepository},
+                null,
+                null);
+            //masterService = new MasterService(repository, new UserValidator(), tempSlaveServices,xmlRepository);
         }
     }
 }

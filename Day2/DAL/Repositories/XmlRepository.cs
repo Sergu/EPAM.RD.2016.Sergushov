@@ -12,6 +12,7 @@ using System.IO;
 
 namespace DAL.Repositories
 {
+    [Serializable]
     public class XmlRepository : IFileRepository<SavedEntity>
     {
         private readonly string filePath;

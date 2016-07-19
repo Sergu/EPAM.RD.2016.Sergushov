@@ -28,6 +28,7 @@ namespace ConsoleApplication1
         public virtual void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)

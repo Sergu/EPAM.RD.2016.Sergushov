@@ -7,13 +7,14 @@ using CustomNumberGenerators;
 
 namespace DAL.Generator
 {
+    [Serializable]
     public class IdGenerator : IGenerator
     {
         private IEnumerable<int> generatedId;
         private int currentPos;
         public IdGenerator(INumberGenerator numberGenerator)
         {
-            generatedId = numberGenerator.GenerateNumberEnumerable();
+            generatedId = numberGenerator.GenerateNumberEnumerable().ToList();
             this.currentPos = 0;
         }
         public int GenerateId()

@@ -13,9 +13,9 @@ using DAL.Exceptions;
 
 namespace BLL.Services
 {
-    public class MasterService : IService<UserBll>
+    public class MasterService : MarshalByRefObject, IService<UserBll>
     {
-        private readonly IRepository<UserEntity> repository;
+        public readonly IRepository<UserEntity> repository;
         private IValidator<UserBll> userValidator;
         private IEnumerable<INotifiedService<UserBll>> slaveServices;
         private IFileRepository<SavedEntity> fileRepository;
@@ -33,6 +33,7 @@ namespace BLL.Services
             }catch(XmlException ex)
             {
                 savedState.Users = new List<UserEntity>();
+
                 savedState.GeneratorPosition = 0;
             }
             this.repository.Update(savedState);
@@ -41,7 +42,8 @@ namespace BLL.Services
                 slave.Init(savedState.Users.Select(u => u.ToBllUser()));
             }
             if (BllLogger.IsLogged)
-                BllLogger.Instance.Trace("master service created");
+                BllLogger.Instance.Trace("master service created. domain: " + AppDomain.CurrentDomain.FriendlyName);
+            var domain = AppDomain.CurrentDomain;
         }
 
         public int Add(UserBll entity)

@@ -9,7 +9,7 @@ using BLL.Mappers;
 
 namespace BLL.Services
 {
-    public class SlaveService : IService<UserBll>, INotifiedService<UserBll>
+    public class SlaveService : MarshalByRefObject, IService<UserBll>, INotifiedService<UserBll>
     {
         private List<UserBll> users;
 
@@ -17,7 +17,8 @@ namespace BLL.Services
         {
             users = new List<UserBll>();
             if (BllLogger.IsLogged)
-                BllLogger.Instance.Trace("slave service created");
+                BllLogger.Instance.Trace("slave service created. domain : {0}",AppDomain.CurrentDomain.FriendlyName);
+            var domain = AppDomain.CurrentDomain;
         }
         public int Add(UserBll entity)
         {
