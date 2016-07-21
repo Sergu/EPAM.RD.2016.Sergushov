@@ -8,7 +8,7 @@ namespace UnitTestProjectCollection
 {
   public class BlockCollClass
   {
-    protected List<int> bc;
+    protected BlockingCollection<int> bc;
 
     private void producer()
     {
@@ -22,14 +22,14 @@ namespace UnitTestProjectCollection
     private void consumer()
     {
       foreach (var i1 in bc)
-      {
+      {                
         Debug.WriteLine("Take: " + i1);
       }
     }
 
     public void Start()
     {
-      bc = new List<int>();
+      bc = new BlockingCollection<int>();
 
       Task Pr = new Task(producer);
       Task Cn = new Task(consumer);
