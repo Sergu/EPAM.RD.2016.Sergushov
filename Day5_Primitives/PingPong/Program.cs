@@ -12,8 +12,8 @@ namespace PingPong
             var pingEvent = new AutoResetEvent(false);
             var pongEvent = new AutoResetEvent(false);
 
-            CancellationTokenSource cts = null; // TODO: Create a new cancellation token source.
-            CancellationToken token; // TODO: Assign an appropriate value to token variable.
+            CancellationTokenSource cts = new CancellationTokenSource(); // TODO: Create a new cancellation token source.
+            CancellationToken token = cts.Token; // TODO: Assign an appropriate value to token variable.
 
             Action ping = () =>
             {
@@ -28,12 +28,23 @@ namespace PingPong
 
                     // TODO: write ping-pong functionality here using pingEvent and pongEvent here.
 
+                    pingEvent.WaitOne();
+
                     Thread.Sleep(1000);
 
-                    continueRunning = true; // TODO: Use cancellation token "token" internals here to set appropriate value.
+                    pongEvent.Set();
+
+                    continueRunning = true;
+                    if (token.IsCancellationRequested)
+                    {
+                        continueRunning = false;
+                        Console.WriteLine("ping canceled");
+                    }
+                    // TODO: Use cancellation token "token" internals here to set appropriate value.
                 }
 
                 // TODO: Fix issue with blocked pong task.
+                pongEvent.Set();
 
                 Console.WriteLine("ping: done");
             };
@@ -47,18 +58,28 @@ namespace PingPong
 
                 while (continueRunning)
                 {
+                    
                     Console.WriteLine("pong!");
 
+                    pingEvent.Set();
+                    pongEvent.WaitOne();
                     // TODO: write ping-pong functionality here using pingEvent or pongEvent here.
 
                     Thread.Sleep(1000);
 
+
                     // TODO: write ping-pong functionality here using pingEvent or pongEvent here.
 
-                    continueRunning = true; // TODO: Use cancellation token "token" internals here to set appropriate value.
+                    continueRunning = true;
+
+                    if (token.IsCancellationRequested) {
+                        continueRunning = false;
+                        Console.WriteLine("pong canceled");
+                    }                                        // TODO: Use cancellation token "token" internals here to set appropriate value.
                 }
 
                 // TODO: Fix issue with blocked ping task.
+                pingEvent.Set();
 
                 Console.WriteLine("pong: done");
             };
@@ -73,7 +94,12 @@ namespace PingPong
             start.Set();
 
             Console.ReadKey();
+
             // TODO: cancel both tasks using cancellation token.
+            cts.Cancel();
+            Thread.Sleep(2000);
+            cts.Dispose();
+            Console.WriteLine("cancelationToken Disposed");
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
