@@ -9,7 +9,7 @@ namespace ConsoleApplication
 {
     public class Service : ConfigurationElement
     {
-        [ConfigurationProperty("type",IsRequired = true)]
+        [ConfigurationProperty("serviceType",IsRequired = true)]
         public Type ServiceType
         {
             get

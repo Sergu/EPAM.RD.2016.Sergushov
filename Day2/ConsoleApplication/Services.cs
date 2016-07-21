@@ -10,20 +10,21 @@ namespace ConsoleApplication
     [ConfigurationCollection(typeof(Service))]
     public class Services : ConfigurationElementCollection
     {
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new Service();
+        }
+
         public Service this[int index]
         {
             get
             {
-                return base.BaseGet(index) as Service;
+                return BaseGet(index) as Service;
             }
         }
         public new Service this[string responseString]
         {
             get { return (Service)BaseGet(responseString); }
-        }
-        protected override System.Configuration.ConfigurationElement CreateNewElement()
-        {
-            return new Service();
         }
 
         protected override object GetElementKey(ConfigurationElement element)
