@@ -24,13 +24,13 @@ namespace PingPong
 
                 while (continueRunning)
                 {
-                    Console.WriteLine("ping!");
-
                     // TODO: write ping-pong functionality here using pingEvent and pongEvent here.
 
                     pingEvent.WaitOne();
 
+
                     Thread.Sleep(1000);
+                    Console.WriteLine("ping!");
 
                     pongEvent.Set();
 
@@ -58,9 +58,8 @@ namespace PingPong
 
                 while (continueRunning)
                 {
-                    
-                    Console.WriteLine("pong!");
 
+                    Console.WriteLine("pong!");
                     pingEvent.Set();
                     pongEvent.WaitOne();
                     // TODO: write ping-pong functionality here using pingEvent or pongEvent here.
