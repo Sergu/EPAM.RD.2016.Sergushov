@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\EndPointAddress.cs" />
+    <Compile Include="Entities\Message.cs" />
     <Compile Include="Entities\UserBll.cs" />
     <Compile Include="Mappers\BllMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

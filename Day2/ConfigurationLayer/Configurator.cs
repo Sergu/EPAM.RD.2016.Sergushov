@@ -35,7 +35,6 @@ namespace ConfigurationLayer
             {
        
                 var domain = String.Format("SlaveDomain-{0}", i.ToString());
-                //var slaveService = (SlaveService)domain.CreateInstanceAndUnwrap("BLL", typeof(SlaveService).FullName);
                 var slave = CreateInstance<SlaveService>(domain);
                 tempSlaveServices.Add(slave);
             }

@@ -10,6 +10,9 @@ using BLL.Validators;
 using DAL.Entities;
 using BLL.Mappers;
 using DAL.Exceptions;
+using System.Threading;
+using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BLL.Services
 {
@@ -20,12 +23,14 @@ namespace BLL.Services
         private IEnumerable<INotifiedService<UserBll>> slaveServices;
         private IFileRepository<SavedEntity> fileRepository;
         private bool IsLogged = false;
+        private List<EndPointAddress> adresses;
+        private ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
 
-        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IEnumerable<INotifiedService<UserBll>> slaveServices,IFileRepository<SavedEntity> fileRepository)
+        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IFileRepository<SavedEntity> fileRepository,IEnumerable<EndPointAddress> adresses)
         {
+            this.adresses = new List<EndPointAddress>(adresses);
             this.repository = repository;
             this.userValidator = validator;
-            this.slaveServices = slaveServices;
             this.fileRepository = fileRepository;
             SavedEntity savedState = new SavedEntity();
             try
@@ -38,11 +43,7 @@ namespace BLL.Services
                 savedState.GeneratorPosition = 0;
             }
             this.repository.Update(savedState);
-            foreach(var slave in slaveServices)
-            {
-                slave.Init(savedState.Users.Select(u => u.ToBllUser()));
-            }
-            if (this.IsLogged)
+            if (IsLogged)
                 BllLogger.Instance.Trace("master service created. domain: " + AppDomain.CurrentDomain.FriendlyName);
             var domain = AppDomain.CurrentDomain;
         }
@@ -51,12 +52,33 @@ namespace BLL.Services
         {
             if (userValidator.Validate(entity))
             {
-                var userId = repository.Add(entity.ToUserEntity());
+                int userId;
+                try
+                {
+                    readerWriterLock.EnterWriteLock();
+                    userId = repository.Add(entity.ToUserEntity());
+                }
+                finally
+                {
+                    readerWriterLock.ExitWriteLock();
+                }
                 if (IsLogged)
                     BllLogger.Instance.Trace("master service notify slaves to add user : {0}", entity.Id);
-                foreach (var slave in slaveServices)
+                var message = new Message { operation = Operation.add, param = entity };
+                foreach (var address in adresses)
                 {
-                    slave.NotifyAdd(entity);
+                    TcpClient client = new TcpClient(address.address, address.port);
+                    NetworkStream networkStream = null;
+                    try
+                    {
+                        var formatter = new BinaryFormatter();
+                        networkStream = client.GetStream();
+                        formatter.Serialize(networkStream, message);
+                    }
+                    finally
+                    {
+                        networkStream.Close();
+                    }
                 }
                 return userId;
             }
@@ -65,18 +87,49 @@ namespace BLL.Services
         }
         public void Delete(int id)
         {
-            repository.Delete(id);
+            try
+            {
+                readerWriterLock.EnterWriteLock();
+                repository.Delete(id);
+            }
+            finally
+            {
+                readerWriterLock.ExitWriteLock();
+            }
             if (IsLogged)
-                BllLogger.Instance.Trace("master service notify slaves to delete user : {0}", id);
-            foreach (var slave in slaveServices)
-                slave.NotifyDelete(id);
+                BllLogger.Instance.Trace("master delete user : {0}", id);
+            var message = new Message { operation = Operation.add, param = id };
+            foreach (var address in adresses)
+            {
+                TcpClient client = new TcpClient(address.address, address.port);
+                NetworkStream networkStream = null;
+                try
+                {
+                    var formatter = new BinaryFormatter();
+                    networkStream = client.GetStream();
+                    formatter.Serialize(networkStream, message);
+                }
+                finally
+                {
+                    networkStream.Close();
+                }
+            }
         }
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
         {
-            var res = repository.Search(criteria).Select(user => user.ToBllUser());
+            List<UserBll> searchResult = new List<UserBll>();
+            try
+            {
+                readerWriterLock.EnterReadLock();
+                searchResult = new List<UserBll>(repository.Search(criteria).Select(user => user.ToBllUser()));
+            }
+            finally
+            {
+                readerWriterLock.ExitReadLock();
+            }
             if (IsLogged)
-                BllLogger.Instance.Trace("master service searched users : {0}", res.Count());
-            return res;
+                BllLogger.Instance.Trace("master service searched users : {0}", searchResult.Count());
+            return searchResult;
         }
         public void SaveServiceState()
         {
