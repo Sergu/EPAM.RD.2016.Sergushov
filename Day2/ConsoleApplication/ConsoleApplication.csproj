@@ -50,9 +50,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisterServicesConfig.cs" />
-    <Compile Include="Service.cs" />
-    <Compile Include="Services.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -63,8 +60,8 @@
       <Project>{dba36c51-fe41-4e55-9874-30b53d7eed2a}</Project>
       <Name>BLL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Configurator\ConfigurationLayer.csproj">
-      <Project>{ea78f4be-6b92-436d-b154-605e436b0bd6}</Project>
+    <ProjectReference Include="..\ConfigurationLayer\ConfigurationLayer.csproj">
+      <Project>{7d6786f7-1349-4615-98fe-5039f205f1ea}</Project>
       <Name>ConfigurationLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.csproj">

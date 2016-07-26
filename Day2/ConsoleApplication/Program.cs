@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConfigurationLayer;
-using ConfigurationLayer.configVlidators;
 using BLL.Services;
 using BLL.Entities;
 using DAL.Entities;
@@ -16,16 +15,17 @@ namespace ConsoleApplication
     {
         static void Main(string[] args)
         {
-            MasterService masterService;
-            List<IService<UserBll>> slaveServices;
+            MasterService masterService = null;
+            List<IService<UserBll>> slaveServices = null;
 
             bool isLog = true;
             int masterServiceCount = 1;
             int slaveServiceCount = 4;
             string filePath = "state.xml";
-            ServiceCountValidator validator = new ServiceCountValidator();
 
-            Configurator.ConfigurateServices(masterServiceCount, slaveServiceCount, validator,filePath, out masterService, out slaveServices,isLog);
+            var configurator = new Configurator();
+
+            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath, masterService, slaveServices,isLog);
 
             var visa = new VisaRecord() { Country = "England", EndDate = DateTime.Now, StartDate = DateTime.Now };
             var visaRecords = new VisaRecord[]

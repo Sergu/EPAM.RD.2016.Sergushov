@@ -19,6 +19,7 @@ namespace BLL.Services
         private IValidator<UserBll> userValidator;
         private IEnumerable<INotifiedService<UserBll>> slaveServices;
         private IFileRepository<SavedEntity> fileRepository;
+        private bool IsLogged = false;
 
         public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IEnumerable<INotifiedService<UserBll>> slaveServices,IFileRepository<SavedEntity> fileRepository)
         {
@@ -41,7 +42,7 @@ namespace BLL.Services
             {
                 slave.Init(savedState.Users.Select(u => u.ToBllUser()));
             }
-            if (BllLogger.IsLogged)
+            if (this.IsLogged)
                 BllLogger.Instance.Trace("master service created. domain: " + AppDomain.CurrentDomain.FriendlyName);
             var domain = AppDomain.CurrentDomain;
         }
@@ -51,7 +52,7 @@ namespace BLL.Services
             if (userValidator.Validate(entity))
             {
                 var userId = repository.Add(entity.ToUserEntity());
-                if (BllLogger.IsLogged)
+                if (IsLogged)
                     BllLogger.Instance.Trace("master service notify slaves to add user : {0}", entity.Id);
                 foreach (var slave in slaveServices)
                 {
@@ -65,7 +66,7 @@ namespace BLL.Services
         public void Delete(int id)
         {
             repository.Delete(id);
-            if (BllLogger.IsLogged)
+            if (IsLogged)
                 BllLogger.Instance.Trace("master service notify slaves to delete user : {0}", id);
             foreach (var slave in slaveServices)
                 slave.NotifyDelete(id);
@@ -73,7 +74,7 @@ namespace BLL.Services
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
         {
             var res = repository.Search(criteria).Select(user => user.ToBllUser());
-            if (BllLogger.IsLogged)
+            if (IsLogged)
                 BllLogger.Instance.Trace("master service searched users : {0}", res.Count());
             return res;
         }
@@ -81,7 +82,7 @@ namespace BLL.Services
         {
             var savedState = repository.GetSavedState();
 
-            if (BllLogger.IsLogged)
+            if (IsLogged)
                 BllLogger.Instance.Trace("master service save state : users {0} , generator {1}", savedState.Users.Count,savedState.GeneratorPosition);
             fileRepository.SaveState(savedState);
         }
@@ -97,7 +98,7 @@ namespace BLL.Services
                 entity.Users = new List<UserEntity>();
                 entity.GeneratorPosition = 0;
             }
-            if (BllLogger.IsLogged)
+            if (IsLogged)
                 BllLogger.Instance.Trace("master service update state : users {0} , generator {1}", entity.Users.Count, entity.GeneratorPosition);
             repository.Update(entity);
         }

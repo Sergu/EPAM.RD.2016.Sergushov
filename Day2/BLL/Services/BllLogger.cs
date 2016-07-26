@@ -11,7 +11,6 @@ namespace BLL.Services
     {
         private static volatile Logger instance;
         private static readonly object sync = new object();
-        public static bool IsLogged;
         public static Logger Instance
         {
             get
