@@ -1,7 +1,10 @@
 ﻿using BLL.Entities;
 using BLL.Services;
+using BLL.Mappers;
 using BLL.Validators;
 using CustomNumberGenerators;
+using DAL.Entities;
+using DAL.Exceptions;
 using DAL.Generator;
 using DAL.Repositories;
 using System;
@@ -16,44 +19,25 @@ namespace ConfigurationLayer
 {
     public class Configurator
     {
-        //private string FilePath;
-        //public MasterService masterService;
-        //public List<IService<UserBll>> slaveServices;
-        //public ILogger logger;
-        public void ConfigurateServices(int masterServiceCount, int slaveServiceCount, string filePath, MasterService masterService, List<IService<BLL.Entities.UserBll>> slaveServices, bool isLog)
+        public void ConfigurateServices(int masterServiceCount, int slaveServiceCount, string filePath, bool isLog)
         {
-            if (ReferenceEquals(filePath, null))
-            {
-                throw new NullReferenceException("file name is null");
-            }
-
-            var tempSlaveServices = new List<SlaveService>();
+            var slaveServices = new List<SlaveService>();
 
             var generator = new IdGenerator(new SimpleNumberGenerator());
-
-            for (int i = 0; i < slaveServiceCount; i++)
-            {
-       
-                var domain = String.Format("SlaveDomain-{0}", i.ToString());
-                var slave = CreateInstance<SlaveService>(domain);
-                tempSlaveServices.Add(slave);
-            }
-            var xmlRepository = new XmlRepository(filePath);
             var repository = new MemoryRepository(generator);
+            var xmlRepository = new XmlRepository(filePath);
+            var isLogged = false;
+            var endPoints = new List<EndPointAddress>()
+            {
+                new EndPointAddress() {address = "localhost", port = 9000 },
+                new EndPointAddress() {address = "localhost", port = 9001 },
+                new EndPointAddress() {address = "localhost", port = 9002 },
+                new EndPointAddress() {address = "localhost", port = 9003 }
+            };
 
+            slaveServices = ConfigureSlaveServices(xmlRepository, isLogged, slaveServiceCount);
+            var masterService = ConfigureMasterService(repository, new UserValidator(), xmlRepository, endPoints, isLogged);
 
-            //slaveServices = new List<IService<UserBll>>(tempSlaveServices.ToArray());
-
-            //var masterDomain = AppDomain.CreateDomain("domainMaster");
-            //masterService = (MasterService)masterDomain.CreateInstanceAndUnwrap("BLL",
-            //    typeof(MasterService).FullName,
-            //    false,
-            //    BindingFlags.Default,
-            //    null,
-            //    new object[] { repository, new UserValidator(), tempSlaveServices, xmlRepository },
-            //    null,
-            //    null);
-            //masterService = new MasterService(repository, new UserValidator(), tempSlaveServices,xmlRepository);
         }
         private T CreateInstance<T>(string domainName, params object[] par)
         {
@@ -61,6 +45,29 @@ namespace ConfigurationLayer
             var loader = (DomainAssemblyLoader)domain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(DomainAssemblyLoader).FullName);
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BLL.dll");
             return (T)loader.LoadFrom(path, typeof(T), par);
+        }
+        private List<SlaveService> ConfigureSlaveServices(IFileRepository<SavedEntity> xmlRepository,bool isLogged,int slaveCount)
+        {
+            var slaves = new List<SlaveService>();
+            List<UserBll> users = null;
+            try
+            {
+                users = new List<UserBll>(xmlRepository.GetState().Users.Select(e => e.ToBllUser()));
+            }catch(XmlException ex)
+            {
+                users = new List<UserBll>();
+            }
+            for(int i = 0; i < slaveCount; i++)
+            {
+                var domain = string.Format("SlaveDomain-{0}", i.ToString());
+                var slave = CreateInstance<SlaveService>(domain, users, isLogged);
+                slaves.Add(slave);
+            }
+            return slaves;
+        }
+        private MasterService ConfigureMasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IFileRepository<SavedEntity> xmlRepository,IEnumerable<EndPointAddress> adresses,bool isLogged)
+        {
+            return CreateInstance<MasterService>("MasterDomain", repository, validator, xmlRepository, adresses, isLogged);
         }
     }
 }

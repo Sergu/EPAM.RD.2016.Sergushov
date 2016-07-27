@@ -12,23 +12,24 @@ namespace BLL.Services
     public class SlaveService : MarshalByRefObject, IService<UserBll>, INotifiedService<UserBll>
     {
         private List<UserBll> users;
+        private bool isLogged = false;
 
-        public SlaveService()
+        public SlaveService(IEnumerable<UserBll> users,bool isLogged)
         {
-            users = new List<UserBll>();
-            //if (BllLogger.IsLogged)
+            this.isLogged = isLogged;
+            this.users = new List<UserBll>(users);
+            if (this.isLogged)
                 BllLogger.Instance.Trace("slave service created. domain : {0}",AppDomain.CurrentDomain.FriendlyName);
-            var domain = AppDomain.CurrentDomain;
         }
         public int Add(UserBll entity)
         {
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Warn("slave service try to add user entity");
             throw new Exception();
         }
         public void Delete(int id)
         {
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Warn("slave service try to delete user entity");
             throw new Exception();
         }
@@ -42,27 +43,27 @@ namespace BLL.Services
                     suitableUsers.Add(user);
                 }
             }
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("master service searched users : {0}", suitableUsers.Count());
             return suitableUsers;
         }
         public void NotifyAdd(UserBll user)
         {
             users.Add(user);
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("slave service notified add user: {0}",user.Id);
         }
         public void NotifyDelete(int id)
         {
             var user = users.FirstOrDefault(u => u.Id == id);
             users.Remove(user);
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("slave service notified delete user: {0}", id);
         }
         public void Init(IEnumerable<UserBll> users)
         {
             this.users = new List<UserBll>(users);
-            //if (BllLogger.IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("slave service initialized");
         }
     }

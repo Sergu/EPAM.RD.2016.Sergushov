@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleAsyncAwait;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -21,10 +22,11 @@ namespace SimpleAsyncAwait
         {
             Console.WriteLine("Waiting for task to complete.");
             // TODO: AsyncHelper.RunSync(DoSomeWork);
+            AsyncHelper.RunSync(DoSomeWork);
             Console.WriteLine("Task is completed. Press any key to continue.");
         }
 
-        private static void DoSomeWork()
+        private async static Task DoSomeWork()
         {
             Console.WriteLine("Press any key to do the work.");
             Console.ReadKey();
@@ -35,9 +37,9 @@ namespace SimpleAsyncAwait
             WebClient webClient = new WebClient();
             stopwatch.Start();
             // TODO: use async/await here to run those tasks in asynchronous style.
-            webClient.DownloadString(string.Format(searchRequest, "pokemon"));
-            webClient.DownloadString(string.Format(searchRequest, "epam"));
-            webClient.DownloadString(string.Format(searchRequest, "minsk"));
+            var res1 = await webClient.DownloadStringTaskAsync(string.Format(searchRequest, "pokemon"));
+            var res2 = await webClient.DownloadStringTaskAsync(string.Format(searchRequest, "epam"));
+            var res3 = await webClient.DownloadStringTaskAsync(string.Format(searchRequest, "minsk"));
             stopwatch.Stop();
             Console.WriteLine(string.Format("Total time is {0}ms.", stopwatch.ElapsedMilliseconds));
         }

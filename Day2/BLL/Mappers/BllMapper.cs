@@ -25,6 +25,7 @@ namespace BLL.Mappers
         {
             return new UserEntity
             {
+                Id = entity.Id,
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 Gender = entity.Gender,

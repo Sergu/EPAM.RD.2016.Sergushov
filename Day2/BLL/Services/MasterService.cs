@@ -20,14 +20,14 @@ namespace BLL.Services
     {
         public readonly IRepository<UserEntity> repository;
         private IValidator<UserBll> userValidator;
-        private IEnumerable<INotifiedService<UserBll>> slaveServices;
         private IFileRepository<SavedEntity> fileRepository;
-        private bool IsLogged = false;
+        private bool isLogged = false;
         private List<EndPointAddress> adresses;
         private ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
 
-        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IFileRepository<SavedEntity> fileRepository,IEnumerable<EndPointAddress> adresses)
+        public MasterService(IRepository<UserEntity> repository,IValidator<UserBll> validator,IFileRepository<SavedEntity> fileRepository,IEnumerable<EndPointAddress> adresses,bool isLogged)
         {
+            this.isLogged = isLogged;
             this.adresses = new List<EndPointAddress>(adresses);
             this.repository = repository;
             this.userValidator = validator;
@@ -43,9 +43,8 @@ namespace BLL.Services
                 savedState.GeneratorPosition = 0;
             }
             this.repository.Update(savedState);
-            if (IsLogged)
+            if (this.isLogged)
                 BllLogger.Instance.Trace("master service created. domain: " + AppDomain.CurrentDomain.FriendlyName);
-            var domain = AppDomain.CurrentDomain;
         }
 
         public int Add(UserBll entity)
@@ -62,7 +61,7 @@ namespace BLL.Services
                 {
                     readerWriterLock.ExitWriteLock();
                 }
-                if (IsLogged)
+                if (isLogged)
                     BllLogger.Instance.Trace("master service notify slaves to add user : {0}", entity.Id);
                 var message = new Message { operation = Operation.add, param = entity };
                 foreach (var address in adresses)
@@ -96,7 +95,7 @@ namespace BLL.Services
             {
                 readerWriterLock.ExitWriteLock();
             }
-            if (IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("master delete user : {0}", id);
             var message = new Message { operation = Operation.add, param = id };
             foreach (var address in adresses)
@@ -127,7 +126,7 @@ namespace BLL.Services
             {
                 readerWriterLock.ExitReadLock();
             }
-            if (IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("master service searched users : {0}", searchResult.Count());
             return searchResult;
         }
@@ -135,7 +134,7 @@ namespace BLL.Services
         {
             var savedState = repository.GetSavedState();
 
-            if (IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("master service save state : users {0} , generator {1}", savedState.Users.Count,savedState.GeneratorPosition);
             fileRepository.SaveState(savedState);
         }
@@ -151,7 +150,7 @@ namespace BLL.Services
                 entity.Users = new List<UserEntity>();
                 entity.GeneratorPosition = 0;
             }
-            if (IsLogged)
+            if (isLogged)
                 BllLogger.Instance.Trace("master service update state : users {0} , generator {1}", entity.Users.Count, entity.GeneratorPosition);
             repository.Update(entity);
         }

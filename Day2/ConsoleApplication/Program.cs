@@ -25,7 +25,7 @@ namespace ConsoleApplication
 
             var configurator = new Configurator();
 
-            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath, masterService, slaveServices,isLog);
+            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath,isLog);
 
             var visa = new VisaRecord() { Country = "England", EndDate = DateTime.Now, StartDate = DateTime.Now };
             var visaRecords = new VisaRecord[]

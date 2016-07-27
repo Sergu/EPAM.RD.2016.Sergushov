@@ -7,6 +7,7 @@ using DAL.Entities;
 
 namespace BLL.Entities
 {
+    [Serializable]
     public class UserBll
     {
         public int Id { get; set; }
