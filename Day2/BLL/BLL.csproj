@@ -49,7 +49,6 @@
     <Compile Include="Entities\UserBll.cs" />
     <Compile Include="Mappers\BllMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\INotifiedService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\BllLogger.cs" />
     <Compile Include="Services\MasterService.cs" />

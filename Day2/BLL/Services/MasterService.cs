@@ -52,37 +52,29 @@ namespace BLL.Services
             if (userValidator.Validate(entity))
             {
                 int userId;
+                UserBll user;
                 try
                 {
                     readerWriterLock.EnterWriteLock();
                     userId = repository.Add(entity.ToUserEntity());
+                    user = repository.GetById(userId).ToBllUser();
                 }
                 finally
                 {
                     readerWriterLock.ExitWriteLock();
                 }
                 if (isLogged)
-                    BllLogger.Instance.Trace("master service notify slaves to add user : {0}", entity.Id);
-                var message = new Message { operation = Operation.add, param = entity };
-                foreach (var address in adresses)
-                {
-                    TcpClient client = new TcpClient(address.address, address.port);
-                    NetworkStream networkStream = null;
-                    try
-                    {
-                        var formatter = new BinaryFormatter();
-                        networkStream = client.GetStream();
-                        formatter.Serialize(networkStream, message);
-                    }
-                    finally
-                    {
-                        networkStream.Close();
-                    }
-                }
+                    BllLogger.Instance.Trace("master service add user with id : {0}", user.Id);
+                var message = new Message { operation = Operation.add, param = user };
+                NotifySlavesByNet(message);
                 return userId;
             }
             else
+            {
+                if (isLogged)
+                    BllLogger.Instance.Error("master service : invalid user format");
                 throw new Exception();
+            }
         }
         public void Delete(int id)
         {
@@ -96,8 +88,18 @@ namespace BLL.Services
                 readerWriterLock.ExitWriteLock();
             }
             if (isLogged)
-                BllLogger.Instance.Trace("master delete user : {0}", id);
-            var message = new Message { operation = Operation.add, param = id };
+                BllLogger.Instance.Trace("master service : delete user : {0}", id);
+            var message = new Message { operation = Operation.remove, param = id };
+            NotifySlavesByNet(message);
+        }
+        private void NotifySlavesByNet(Message message)
+        {
+            if(message.operation == Operation.add)
+                if (isLogged)
+                    BllLogger.Instance.Trace("master service : notify slaves to add user with id : {0}", ((UserBll)message.param).Id);
+            if(message.operation == Operation.remove)
+                if (isLogged)
+                    BllLogger.Instance.Trace("master service : notify slaves to remove user with id : {0}", ((int)message.param));
             foreach (var address in adresses)
             {
                 TcpClient client = new TcpClient(address.address, address.port);
@@ -114,6 +116,7 @@ namespace BLL.Services
                 }
             }
         }
+
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
         {
             List<UserBll> searchResult = new List<UserBll>();
@@ -127,7 +130,7 @@ namespace BLL.Services
                 readerWriterLock.ExitReadLock();
             }
             if (isLogged)
-                BllLogger.Instance.Trace("master service searched users : {0}", searchResult.Count());
+                BllLogger.Instance.Trace("master service searched {0} users", searchResult.Count());
             return searchResult;
         }
         public void SaveServiceState()

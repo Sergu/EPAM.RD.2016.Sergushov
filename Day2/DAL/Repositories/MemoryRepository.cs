@@ -45,6 +45,10 @@ namespace DAL.Repositories
             }
             return suitableUsers;
         }
+        public UserEntity GetById(int id)
+        {
+            return users.FirstOrDefault(e => e.Id == id);
+        }
         public SavedEntity GetSavedState()
         {
             var generatorPosition = generator.GetCurrentPosition();

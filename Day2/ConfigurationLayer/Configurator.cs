@@ -14,29 +14,50 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using DAL.SearchCriterias;
 
 namespace ConfigurationLayer
 {
     public class Configurator
     {
-        public void ConfigurateServices(int masterServiceCount, int slaveServiceCount, string filePath, bool isLog)
+        public void ConfigurateServices(int masterServiceCount, int slaveServiceCount, string filePath, bool isLog,EndPointAddress[] addresses)
         {
             var slaveServices = new List<SlaveService>();
 
             var generator = new IdGenerator(new SimpleNumberGenerator());
             var repository = new MemoryRepository(generator);
             var xmlRepository = new XmlRepository(filePath);
-            var isLogged = false;
-            var endPoints = new List<EndPointAddress>()
+            var isLogged = true;
+
+            slaveServices = ConfigureSlaveServices(xmlRepository, isLogged, slaveServiceCount,addresses);
+
+            var visa1 = new VisaRecord() { Country = "Austria", EndDate = DateTime.Now, StartDate = DateTime.Now };
+            var visa2 = new VisaRecord() { Country = "Bulgaria", EndDate = DateTime.Now, StartDate = DateTime.Now };
+            var visaRecords1 = new VisaRecord[]
             {
-                new EndPointAddress() {address = "localhost", port = 9000 },
-                new EndPointAddress() {address = "localhost", port = 9001 },
-                new EndPointAddress() {address = "localhost", port = 9002 },
-                new EndPointAddress() {address = "localhost", port = 9003 }
+                visa1,
+                visa2
+            };
+            var user = new UserBll()
+            {
+                FirstName = "nick",
+                LastName = "foligno",
+                Gender = UserGender.male,
+                VisaRecords = visaRecords1
             };
 
-            slaveServices = ConfigureSlaveServices(xmlRepository, isLogged, slaveServiceCount);
-            var masterService = ConfigureMasterService(repository, new UserValidator(), xmlRepository, endPoints, isLogged);
+            var masterService = ConfigureMasterService(repository, new UserValidator(), xmlRepository, addresses, isLogged);
+            masterService.Add(user);
+            Thread.Sleep(500);
+            masterService.Add(user);
+            Thread.Sleep(500);
+            var searchedUsers = slaveServices[1].Search(new FirstNameCriteria("NICK"));
+
+            masterService.Delete(3);
+            Thread.Sleep(500);
+            masterService.Add(user);
+
 
         }
         private T CreateInstance<T>(string domainName, params object[] par)
@@ -46,7 +67,7 @@ namespace ConfigurationLayer
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BLL.dll");
             return (T)loader.LoadFrom(path, typeof(T), par);
         }
-        private List<SlaveService> ConfigureSlaveServices(IFileRepository<SavedEntity> xmlRepository,bool isLogged,int slaveCount)
+        private List<SlaveService> ConfigureSlaveServices(IFileRepository<SavedEntity> xmlRepository,bool isLogged,int slaveCount,EndPointAddress[] addresses)
         {
             var slaves = new List<SlaveService>();
             List<UserBll> users = null;
@@ -60,7 +81,7 @@ namespace ConfigurationLayer
             for(int i = 0; i < slaveCount; i++)
             {
                 var domain = string.Format("SlaveDomain-{0}", i.ToString());
-                var slave = CreateInstance<SlaveService>(domain, users, isLogged);
+                var slave = CreateInstance<SlaveService>(domain,i+1,users, isLogged,addresses[i]);
                 slaves.Add(slave);
             }
             return slaves;

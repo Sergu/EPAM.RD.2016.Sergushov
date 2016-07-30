@@ -20,12 +20,19 @@ namespace ConsoleApplication
 
             bool isLog = true;
             int masterServiceCount = 1;
-            int slaveServiceCount = 4;
+            int slaveServiceCount = 3;
             string filePath = "state.xml";
 
             var configurator = new Configurator();
+            var endPoints = new List<EndPointAddress>()
+            {
+                new EndPointAddress() {address = "127.0.0.1", port = 9000 },
+                new EndPointAddress() {address = "127.0.0.1", port = 9001 },
+                new EndPointAddress() {address = "127.0.0.1", port = 9002 }
+                //new EndPointAddress() {address = "127.0.0.1", port = 9003 }
+            };
 
-            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath,isLog);
+            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath,isLog,endPoints.ToArray());
 
             var visa = new VisaRecord() { Country = "England", EndDate = DateTime.Now, StartDate = DateTime.Now };
             var visaRecords = new VisaRecord[]

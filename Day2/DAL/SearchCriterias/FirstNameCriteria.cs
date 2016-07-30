@@ -7,6 +7,7 @@ using DAL.Entities;
 
 namespace DAL.SearchCriterias
 {
+    [Serializable]
     public class FirstNameCriteria : ISearchCriteria
     {
         private string Name;
