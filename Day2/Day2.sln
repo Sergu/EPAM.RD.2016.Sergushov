@@ -15,6 +15,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DALTests", "DALTests\DALTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationLayer", "ConfigurationLayer\ConfigurationLayer.csproj", "{7D6786F7-1349-4615-98FE-5039F205F1EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfUserStorageService", "WcfUserStorageService\WcfUserStorageService.csproj", "{1C4962DD-9099-4D74-8FB1-DB99569808E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfClient", "WcfClient\WcfClient.csproj", "{05F8D6ED-8C00-4774-896A-F7B7738D6670}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C4962DD-9099-4D74-8FB1-DB99569808E5} = {1C4962DD-9099-4D74-8FB1-DB99569808E5}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfServer", "WcfServer\WcfServer.csproj", "{963CA8C8-4465-49A0-A35E-42D59811DA7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +54,18 @@ Global
 		{7D6786F7-1349-4615-98FE-5039F205F1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D6786F7-1349-4615-98FE-5039F205F1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D6786F7-1349-4615-98FE-5039F205F1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C4962DD-9099-4D74-8FB1-DB99569808E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C4962DD-9099-4D74-8FB1-DB99569808E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C4962DD-9099-4D74-8FB1-DB99569808E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C4962DD-9099-4D74-8FB1-DB99569808E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05F8D6ED-8C00-4774-896A-F7B7738D6670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05F8D6ED-8C00-4774-896A-F7B7738D6670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05F8D6ED-8C00-4774-896A-F7B7738D6670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05F8D6ED-8C00-4774-896A-F7B7738D6670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{963CA8C8-4465-49A0-A35E-42D59811DA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{963CA8C8-4465-49A0-A35E-42D59811DA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{963CA8C8-4465-49A0-A35E-42D59811DA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{963CA8C8-4465-49A0-A35E-42D59811DA7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

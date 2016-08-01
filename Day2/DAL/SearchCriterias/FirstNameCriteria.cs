@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
+using System.Runtime.Serialization;
 
 namespace DAL.SearchCriterias
 {
     [Serializable]
+    [DataContract]
     public class FirstNameCriteria : ISearchCriteria
     {
-        private string Name;
+        [DataMember]
+        public string Name { get; set; }
         public FirstNameCriteria(string firstName)
         {
             this.Name = firstName;

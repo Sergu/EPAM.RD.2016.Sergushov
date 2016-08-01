@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/DAL.Entities" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DAL.Entities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:56663/UserStorageService.svc?xsd=xsd0" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="VisaRecord">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="_x003C_Country_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_EndDate_x003E_k__BackingField" type="xs:dateTime" />
+      <xs:element name="_x003C_StartDate_x003E_k__BackingField" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VisaRecord" nillable="true" type="tns:VisaRecord" />
+  <xs:simpleType name="UserGender">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="male" />
+      <xs:enumeration value="female" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="UserGender" nillable="true" type="tns:UserGender" />
+  <xs:complexType name="ArrayOfVisaRecord">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VisaRecord" type="tns:VisaRecord" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVisaRecord" nillable="true" type="tns:ArrayOfVisaRecord" />
+</xs:schema>

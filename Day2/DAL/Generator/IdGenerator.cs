@@ -14,8 +14,8 @@ namespace DAL.Generator
         private int currentPos;
         public IdGenerator(INumberGenerator numberGenerator)
         {
-            generatedId = numberGenerator.GenerateNumberEnumerable().Take(20).ToList();
-            this.currentPos = 0;
+            generatedId = numberGenerator.GenerateNumberEnumerable().Take(50).ToList();
+            currentPos = 0;
         }
         public int GenerateId()
         {

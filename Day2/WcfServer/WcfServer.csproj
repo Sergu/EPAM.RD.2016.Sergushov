@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BA6F2BBD-D816-48F0-ABCB-9E9F3736BFEA}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{963CA8C8-4465-49A0-A35E-42D59811DA7F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DAL</RootNamespace>
-    <AssemblyName>DAL</AssemblyName>
+    <RootNamespace>WcfServer</RootNamespace>
+    <AssemblyName>WcfServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,7 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,26 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\IEntity.cs" />
-    <Compile Include="Entities\SavedEntity.cs" />
-    <Compile Include="Entities\UserEntity.cs" />
-    <Compile Include="Exceptions\XmlException.cs" />
-    <Compile Include="Generator\IdGenerator.cs" />
-    <Compile Include="Generator\IGenerator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\IFileRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Repositories\MemoryRepository.cs" />
-    <Compile Include="Repositories\XmlRepository.cs" />
-    <Compile Include="SearchCriterias\FirstNameCriteria.cs" />
-    <Compile Include="SearchCriterias\ISearchCriteria.cs" />
-    <Compile Include="SearchCriterias\LastNameCriteria.cs" />
-    <Compile Include="SearchCriterias\VisaCriteria.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomNumberGenerators\CustomNumberGenerators.csproj">
-      <Project>{a7e17b53-35f6-4551-be96-db2f29f20875}</Project>
-      <Name>CustomNumberGenerators</Name>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{DBA36C51-FE41-4E55-9874-30B53D7EED2A}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ConfigurationLayer\ConfigurationLayer.csproj">
+      <Project>{7D6786F7-1349-4615-98FE-5039F205F1EA}</Project>
+      <Name>ConfigurationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WcfUserStorageService\WcfUserStorageService.csproj">
+      <Project>{1c4962dd-9099-4d74-8fb1-db99569808e5}</Project>
+      <Name>WcfUserStorageService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

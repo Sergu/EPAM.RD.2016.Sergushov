@@ -32,7 +32,9 @@ namespace ConsoleApplication
                 //new EndPointAddress() {address = "127.0.0.1", port = 9003 }
             };
 
-            configurator.ConfigurateServices(masterServiceCount, slaveServiceCount,filePath,isLog,endPoints.ToArray());
+            var services = configurator.ConfigurateServices();
+            masterService = services.masterService;
+            slaveServices = new List<IService<UserBll>>(services.slaveServices);
 
             var visa = new VisaRecord() { Country = "England", EndDate = DateTime.Now, StartDate = DateTime.Now };
             var visaRecords = new VisaRecord[]

@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
+using System.Runtime.Serialization;
 
 namespace DAL.SearchCriterias
 {
     [Serializable]
+    [DataContract]
     public class VisaCriteria : ISearchCriteria
     {
-        private VisaRecord visa;
+        [DataMember]
+        public VisaRecord visa { get; set; }
         public VisaCriteria(VisaRecord visa)
         {
             this.visa = visa;

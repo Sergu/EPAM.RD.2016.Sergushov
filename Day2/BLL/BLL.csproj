@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,6 +53,7 @@
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\BllLogger.cs" />
     <Compile Include="Services\MasterService.cs" />
+    <Compile Include="Services\ServiceProxy.cs" />
     <Compile Include="Services\SlaveService.cs" />
     <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\UserValidator.cs" />

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="3ec03414-6668-4ec0-882c-7c457746d661" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:56663/UserStorageService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="UserStorageService.xsd" MetadataType="Schema" ID="001f2e99-0020-461b-80a8-e648f0b93e34" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?xsd=xsd2" />
+    <MetadataFile FileName="UserStorageService1.xsd" MetadataType="Schema" ID="eb1753b8-7a08-452e-a204-16c2f5575654" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?xsd=xsd3" />
+    <MetadataFile FileName="UserStorageService2.xsd" MetadataType="Schema" ID="020e7087-7f14-4f9c-ae91-f40af18bcea7" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?xsd=xsd0" />
+    <MetadataFile FileName="UserStorageService3.xsd" MetadataType="Schema" ID="4e5d1380-3017-4055-9b30-8ad45c17f172" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?xsd=xsd1" />
+    <MetadataFile FileName="UserStorageService4.xsd" MetadataType="Schema" ID="971741b8-247a-469d-bdd6-fb51a227e114" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?xsd=xsd4" />
+    <MetadataFile FileName="UserStorageService.disco" MetadataType="Disco" ID="f875c82e-095b-4725-8b80-ca984d294206" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?disco" />
+    <MetadataFile FileName="UserStorageService.wsdl" MetadataType="Wsdl" ID="98eea3db-f425-4c52-8fa8-52dad21d80bf" SourceId="1" SourceUrl="http://localhost:56663/UserStorageService.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -21,44 +21,29 @@ namespace ConfigurationLayer
 {
     public class Configurator
     {
-        public void ConfigurateServices(int masterServiceCount, int slaveServiceCount, string filePath, bool isLog,EndPointAddress[] addresses)
+        public ConfiguredServices ConfigurateServices()
         {
-            var slaveServices = new List<SlaveService>();
+            var addresses = new List<EndPointAddress>()
+            {
+                new EndPointAddress() {address = "127.0.0.1", port = 9000 },
+                new EndPointAddress() {address = "127.0.0.1", port = 9001 },
+                new EndPointAddress() {address = "127.0.0.1", port = 9002 }
+                //new EndPointAddress() {address = "127.0.0.1", port = 9003 }
+            };
+            var isLogged = true;
+            int slaveServiceCount = 3;
+            int masterServiceCount = 1;
+            string filePath = "state.xml";
 
+            var slaveServices = new List<SlaveService>();
             var generator = new IdGenerator(new SimpleNumberGenerator());
             var repository = new MemoryRepository(generator);
             var xmlRepository = new XmlRepository(filePath);
-            var isLogged = true;
 
-            slaveServices = ConfigureSlaveServices(xmlRepository, isLogged, slaveServiceCount,addresses);
-
-            var visa1 = new VisaRecord() { Country = "Austria", EndDate = DateTime.Now, StartDate = DateTime.Now };
-            var visa2 = new VisaRecord() { Country = "Bulgaria", EndDate = DateTime.Now, StartDate = DateTime.Now };
-            var visaRecords1 = new VisaRecord[]
-            {
-                visa1,
-                visa2
-            };
-            var user = new UserBll()
-            {
-                FirstName = "nick",
-                LastName = "foligno",
-                Gender = UserGender.male,
-                VisaRecords = visaRecords1
-            };
-
+            slaveServices = ConfigureSlaveServices(xmlRepository, isLogged, slaveServiceCount,addresses.ToArray());
             var masterService = ConfigureMasterService(repository, new UserValidator(), xmlRepository, addresses, isLogged);
-            masterService.Add(user);
-            Thread.Sleep(500);
-            masterService.Add(user);
-            Thread.Sleep(500);
-            var searchedUsers = slaveServices[1].Search(new FirstNameCriteria("NICK"));
 
-            masterService.Delete(3);
-            Thread.Sleep(500);
-            masterService.Add(user);
-
-
+            return new ConfiguredServices { slaveServices = slaveServices, masterService = masterService };
         }
         private T CreateInstance<T>(string domainName, params object[] par)
         {
