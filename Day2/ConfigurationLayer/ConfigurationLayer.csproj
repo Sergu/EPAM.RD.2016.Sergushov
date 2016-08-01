@@ -48,6 +48,12 @@
   <ItemGroup>
     <Compile Include="Configurator.cs" />
     <Compile Include="ConfiguredServices.cs" />
+    <Compile Include="CustomTags\AddressConfig\AddressCollection.cs" />
+    <Compile Include="CustomTags\AddressConfig\AddressElement.cs" />
+    <Compile Include="CustomTags\AddressConfig\RegisterAddressConfigSection.cs" />
+    <Compile Include="CustomTags\FileConfig\FileCollection.cs" />
+    <Compile Include="CustomTags\FileConfig\FileElement.cs" />
+    <Compile Include="CustomTags\FileConfig\RegisterFileConfigSection.cs" />
     <Compile Include="CustomTags\ServiceConfig\RegisterServicesConfigSection.cs" />
     <Compile Include="CustomTags\ServiceConfig\ServiceCollection.cs" />
     <Compile Include="CustomTags\ServiceConfig\ServiceElement.cs" />
@@ -58,7 +64,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="ApplicationConfig.config" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

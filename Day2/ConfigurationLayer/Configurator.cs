@@ -16,6 +16,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using DAL.SearchCriterias;
+using System.Configuration;
+using ConfigurationLayer.CustomTags.ServiceConfig;
+using ConfigurationLayer.CustomTags.FileConfig;
+using ConfigurationLayer.CustomTags.AddressConfig;
 
 namespace ConfigurationLayer
 {
@@ -23,17 +27,13 @@ namespace ConfigurationLayer
     {
         public ConfiguredServices ConfigurateServices()
         {
-            var addresses = new List<EndPointAddress>()
-            {
-                new EndPointAddress() {address = "127.0.0.1", port = 9000 },
-                new EndPointAddress() {address = "127.0.0.1", port = 9001 },
-                new EndPointAddress() {address = "127.0.0.1", port = 9002 }
-                //new EndPointAddress() {address = "127.0.0.1", port = 9003 }
-            };
             var isLogged = true;
-            int slaveServiceCount = 3;
-            int masterServiceCount = 1;
-            string filePath = "state.xml";
+            int slaveServiceCount;
+            int masterServiceCount;
+
+            GetServiceCountFromConfig(out masterServiceCount,out slaveServiceCount);
+            string filePath = GetFileFromConfig();
+            var addresses = GetEndPointsFromConfig();
 
             var slaveServices = new List<SlaveService>();
             var generator = new IdGenerator(new SimpleNumberGenerator());
@@ -45,6 +45,46 @@ namespace ConfigurationLayer
 
             return new ConfiguredServices { slaveServices = slaveServices, masterService = masterService };
         }
+        private void GetServiceCountFromConfig(out int masterCount, out int slaveCount)
+        {
+            masterCount = 1;
+            slaveCount = 3;
+            var cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var serviceSection = (RegisterServicesConfigSection)cfg.GetSection("RegisterServices");
+            foreach (ServiceElement service in serviceSection.Services)
+            {
+                if(service.ServiceType.ToLower() == "master")
+                {
+                    masterCount = service.Count;
+                }
+                if(service.ServiceType.ToLower() == "slave")
+                {
+                    slaveCount = service.Count;
+                }
+            }
+        }
+        private IEnumerable<EndPointAddress> GetEndPointsFromConfig()
+        {
+            var addresses = new List<EndPointAddress>();
+            var cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var addressSection = (RegisterAddressConfigSection)cfg.GetSection("RegisterAddresses");
+            
+            foreach(AddressElement address in addressSection.Addresses)
+            {
+                var endPoint = new EndPointAddress { address = address.Address, port = address.Port };
+                addresses.Add(endPoint);
+            }
+
+            return addresses;
+        }
+        private string GetFileFromConfig()
+        {
+            var cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var fileSection = (RegisterFileConfigSection)cfg.GetSection("RegisterFiles");
+
+            var fileElement = (FileElement)fileSection.Files[0];
+            return fileElement.FileName;
+        }
         private T CreateInstance<T>(string domainName, params object[] par)
         {
             AppDomain domain = AppDomain.CreateDomain(domainName);
@@ -52,6 +92,7 @@ namespace ConfigurationLayer
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BLL.dll");
             return (T)loader.LoadFrom(path, typeof(T), par);
         }
+
         private List<SlaveService> ConfigureSlaveServices(IFileRepository<SavedEntity> xmlRepository,bool isLogged,int slaveCount,EndPointAddress[] addresses)
         {
             var slaves = new List<SlaveService>();

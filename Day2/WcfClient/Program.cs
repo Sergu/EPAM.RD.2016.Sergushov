@@ -23,7 +23,7 @@ namespace WcfClient
             var token = cts.Token;
             var start = new ManualResetEventSlim(false);
 
-            var exampleUser = new UserBll { LastName = "foligno", FirstName = "nick" };
+            var exampleUser = new UserBll { LastName = "foligno", FirstName = "nick", VisaRecords = new List<VisaRecord>().ToArray()};
 
             WaitCallback callService = (object state) =>
             {

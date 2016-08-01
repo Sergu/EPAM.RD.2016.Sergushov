@@ -44,10 +44,8 @@ namespace WcfUserStorageService.Configuration
             return new UserStorageService(proxy);
         }
 
-        public object GetInstance(InstanceContext instanceContext, Message message)
-        {
-            return this.GetInstance(instanceContext);
-        }
+        public object GetInstance(InstanceContext instanceContext, Message message) => GetInstance(instanceContext);
+
 
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {

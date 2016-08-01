@@ -11,6 +11,8 @@ using BLL.Services;
 using ConfigurationLayer;
 using System.Threading;
 using System.ServiceModel.Description;
+using System.Configuration;
+using ConfigurationLayer.CustomTags.ServiceConfig;
 
 namespace WcfServer
 {
@@ -20,7 +22,11 @@ namespace WcfServer
         {
             bool createdNew = false;
             Mutex mutex = new Mutex(true, "mutex", out createdNew);
-            Uri baseAddress = new Uri("http://localhost:8733/Design_Time_Addresses/WcfService/UserService/");
+
+            //var cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            //var fileSection = (RegisterServicesConfigSection)cfg.GetSection("RegisterServices");
+
+            Uri baseAddress = new Uri("http://localhost:8733/Design_Time_Addresses/WcfService/UserStorageService/");
             var services = new Configurator().ConfigurateServices();
             ServiceProxy proxy = new ServiceProxy(services.masterService,services.slaveServices);
             var service = new UserStorageService(proxy);
