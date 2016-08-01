@@ -24,7 +24,7 @@ namespace ConfigurationLayer.CustomTags.AddressConfig
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((AddressElement)element).Address;
+            return ((AddressElement)element);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace ConfigurationLayer.CustomTags.AddressConfig
 {
     public class AddressElement : ConfigurationElement
     {
-        [ConfigurationProperty("address", IsKey = true, IsRequired = true)]
+        [ConfigurationProperty("address", IsKey = false, IsRequired = false,DefaultValue = "127.0.0.1")]
         public string Address
         {
             get
