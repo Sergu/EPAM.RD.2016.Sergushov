@@ -31,7 +31,7 @@ namespace BLL.Services
             if (serviceId == 0)
                 return master.Search(criteria);
             else
-                return slaves[serviceId].Search(criteria);
+                return slaves[serviceId-1].Search(criteria);
         }
         public void Save()
         {
