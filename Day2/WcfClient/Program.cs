@@ -34,8 +34,11 @@ namespace WcfClient
                         break;
 
                     service.Add(exampleUser);
-                    service.Search(new FirstNameCriteria { Name = "nick" });
-                    Thread.Sleep(random.Next(500, 1500));
+                    Console.WriteLine("add: Name - {0}", exampleUser.FirstName);
+                    var searchResult = service.Search(new FirstNameCriteria { Name = "nick" });
+                    Console.WriteLine("search: {0}", searchResult.Count());
+
+                    Thread.Sleep(5000);
                 }
             };
 

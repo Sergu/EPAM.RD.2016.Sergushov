@@ -55,7 +55,7 @@ namespace BLL.Services
                 }
             }
             if (isLogged)
-                BllLogger.Instance.Trace("slave {0} : searched {0} users",id, suitableUsers.Count());
+                BllLogger.Instance.Trace("slave {0} : searched {1} users",id, suitableUsers.Count());
             return suitableUsers;
         }
         private void Listen()

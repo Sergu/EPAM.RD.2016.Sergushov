@@ -49,8 +49,8 @@ namespace WcfServer
             }
             proxy.Save();
             Console.WriteLine("Master state was saved");
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
+            Console.WriteLine("Press ENTER to exit");
+            Console.ReadLine();
         }
     }
 }
