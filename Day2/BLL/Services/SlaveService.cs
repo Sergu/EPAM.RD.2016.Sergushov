@@ -19,6 +19,7 @@ namespace BLL.Services
         private bool isLogged = true;
         private EndPointAddress address;
         private int id;
+        private ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
 
         public SlaveService(int id,IEnumerable<UserBll> users,bool isLogged,EndPointAddress address)
         {
@@ -46,19 +47,29 @@ namespace BLL.Services
         }
         public IEnumerable<UserBll> Search(ISearchCriteria criteria)
         {
-            List<UserBll> suitableUsers = new List<UserBll>();
-            foreach(var user in users)
+            try
             {
-                if(criteria.IsSuitable(user.ToUserEntity()))
+                readerWriterLock.EnterReadLock();
+
+                List<UserBll> suitableUsers = new List<UserBll>();
+
+                foreach (var user in users)
                 {
-                    suitableUsers.Add(user);
+                    if (criteria.IsSuitable(user.ToUserEntity()))
+                    {
+                        suitableUsers.Add(user);
+                    }
                 }
+                if (isLogged)
+                    BllLogger.Instance.Trace("slave {0} : searched {1} users", id, suitableUsers.Count());
+                return suitableUsers;
             }
-            if (isLogged)
-                BllLogger.Instance.Trace("slave {0} : searched {1} users",id, suitableUsers.Count());
-            return suitableUsers;
+            finally
+            {
+                readerWriterLock.ExitReadLock();
+            }
         }
-        private void Listen()
+        private async void Listen()
         {
             TcpListener listener = null;
             TcpClient client = null;
@@ -70,7 +81,7 @@ namespace BLL.Services
                     BllLogger.Instance.Trace("slave {0} : begin listen",id);
                 while (true)
                 {
-                    client = listener.AcceptTcpClient();
+                    client = await listener.AcceptTcpClientAsync();
                     var networkStream = client.GetStream();
                     var formatter = new BinaryFormatter();
                     var message = (Message)formatter.Deserialize(networkStream);

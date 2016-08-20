@@ -37,6 +37,17 @@ namespace WcfClient
                     Console.WriteLine("add: Name - {0}", exampleUser.FirstName);
                     var searchResult = service.Search(new FirstNameCriteria { Name = "nick" });
                     Console.WriteLine("search: {0}", searchResult.Count());
+                    var numb = random.Next(1, 4);
+                    if(numb == 1)
+                    {
+                        if (searchResult.Count() > 0)
+                        {
+                            var removedUserIdInCollection = random.Next(0, searchResult.Count() - 1);
+                            var removedUser = searchResult[removedUserIdInCollection];
+                            service.Delete(removedUser.Id);
+                            Console.WriteLine("delete: id - {0}", removedUser.Id);
+                        }
+                    }
 
                     Thread.Sleep(5000);
                 }
